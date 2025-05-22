@@ -1,17 +1,12 @@
 ﻿using MyFirstGameEngine.Log;
 using MyFirstGameEngine.Models;
 using MyFirstGameEngine.EngineLogic;
-using System.Diagnostics;
 
 namespace MyFirstGameEngine
 {
     internal class DemoGame : Engine
     {
-
-
-        //Shape2D? player;
         Sprite2D? player;
-
 
         string[,] Map = {
         {".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "." },
@@ -32,17 +27,12 @@ namespace MyFirstGameEngine
         {"w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w", "w" },
         };
 
-        public DemoGame() : base(new Vector2(800, 600), "Demo Game")
-        {
-
-        }
-
+        public DemoGame() : base(new Vector2(800, 600), "Demo Game") {}
         public override void OnLoad()
         {
             IsDebugMode = false;
-            BackGroundColor = Color.Black;
             ConsoleLog.Info("Game resources loaded!");
-            //player = new Shape2D(new Vector2(100, 100), new Vector2(50, 50), Color.Red, "Player");
+
             player = new Sprite2D(new Vector2(10, 10), new Vector2(25, 35), "Base pack\\Player\\p1_front", "Player");
             for (int i = 0; i < Map.GetLength(0); i++)
             {
@@ -84,11 +74,8 @@ namespace MyFirstGameEngine
                        player.Position.Y < 0;
             
         }
-        //private Vector2 playerPos = player.Position;
         public override void OnUpdate()
         {
-
-
             if (player != null && Window != null)
             {
                 Vector2 playerPosOld = player.Position;
@@ -97,9 +84,7 @@ namespace MyFirstGameEngine
                 if (Collisions())
                 {
                     player.Position = playerPosOld;
-                }              
-            }
-
+                }                          }
         }
 
         public override void OnStop()

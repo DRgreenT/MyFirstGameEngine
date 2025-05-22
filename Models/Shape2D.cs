@@ -32,15 +32,25 @@ namespace MyFirstGameEngine.Models
             ConsoleLog.Info($"{this.Tag} -> Shape deleted");
         }
 
-        public bool IsColliding()
+        public bool IsColliding(string collingObjectTag)
         {
-            foreach (var item in Engine.shape2Ds)
+
+            foreach (var item in Engine.sprite2Ds)
             {
-                if (this.Position.X < item.Position.X + item.Size.X &&
-                    this.Position.X + this.Size.X > item.Position.X &&
-                    this.Position.Y < item.Position.Y + item.Size.Y &&
-                    this.Position.Y + this.Size.Y > item.Position.Y)
-                    return true;
+
+                if (item.Tag == collingObjectTag)
+                {
+
+                    if (this.Position.X < item.Position.X + item.Size.X &&
+                        this.Position.X + this.Size.X > item.Position.X &&
+                        this.Position.Y < item.Position.Y + item.Size.Y &&
+                        this.Position.Y + this.Size.Y > item.Position.Y)
+                    {
+                        ConsoleLog.Info($"{this.Tag} colliding with {collingObjectTag}");
+                        return true;
+                    }
+                }
+
             }
             return false;
         }

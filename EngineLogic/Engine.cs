@@ -9,18 +9,21 @@ namespace MyFirstGameEngine.EngineLogic
     {
         public bool IsDebugMode = false;
 
+        private CancellationTokenSource cts = new CancellationTokenSource();
+
         private Vector2 ScreenSize = new Vector2(800, 600);
         private string WindowTitle = "My First Game Engine";
-        private Thread GameThread = null!;
+        
         public Canvas Window = new Canvas();
-        private CancellationTokenSource cts = new CancellationTokenSource();
+        
         public Color BackGroundColor = Color.Black;
 
         public static List<Shape2D> shape2Ds = new List<Shape2D>();
-
         public static List<Sprite2D> sprite2Ds = new List<Sprite2D>();
 
         public static Dictionary<string, Bitmap> CachedSprites = new Dictionary<string, Bitmap>();
+
+        private Thread GameThread = null!;
         public Engine(Vector2? ScreenSize, string? WindowTitle)
         {
             if (ScreenSize is not null)
@@ -146,7 +149,6 @@ namespace MyFirstGameEngine.EngineLogic
         public abstract void OnStop();
 
         public abstract void KeyDown(object sender, KeyEventArgs e);
-
         public abstract void KeyUp(object sender, KeyEventArgs e);
 
     }

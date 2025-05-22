@@ -1,6 +1,5 @@
 ﻿using MyFirstGameEngine.Log;
 using MyFirstGameEngine.EngineLogic;
-using System.Diagnostics.Eventing.Reader;
 
 namespace MyFirstGameEngine.Models
 {

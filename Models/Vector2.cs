@@ -41,5 +41,10 @@
         {
             return new Vector2(vec1.X + vec2.X, vec1.Y + vec2.Y);
         }
+
+        public static Vector2 operator - (Vector2 vec1, Vector2 vec2)
+        {
+            return new Vector2(vec1.X - vec2.X, vec1.Y - vec2.Y);
+        }
     }
 }
