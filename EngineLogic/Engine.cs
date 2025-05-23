@@ -134,14 +134,104 @@ namespace MyFirstGameEngine.EngineLogic
         {
             Vector2 delta = Vector2.Zero();
 
-            if (activeKeys.Contains(Keys.W)) delta.Up(1 * modifier);
-            if (activeKeys.Contains(Keys.S)) delta.Down(1 * modifier);
+            //if (activeKeys.Contains(Keys.W)) delta.Up(1 * modifier);
+            //if (activeKeys.Contains(Keys.S)) delta.Down(1 * modifier);
             if (activeKeys.Contains(Keys.A)) delta.Left(1 * modifier);
             if (activeKeys.Contains(Keys.D)) delta.Right(1 * modifier);
+            if (activeKeys.Contains(Keys.Space)) delta.Up(4 * modifier);
 
             return delta;
 
         }
+
+        public void Move(Sprite2D player, float jumpForce, float gravity, float maxFallSpeed)
+        {
+            if (player == null || Window == null) return;
+
+            Vector2 moveDelta = InputHandler();
+
+            bool isGrounded = !IsMoveValid(player, "Ground", player.Position + new Vector2(0, 1));
+
+            if (isGrounded && moveDelta.Y < -0.5f)
+            {
+                player.Velocity.Y = -jumpForce;
+            }
+
+            player.Velocity.X = moveDelta.X;
+            player.Velocity.Y += gravity;
+
+            if (player.Velocity.Y > maxFallSpeed)
+                player.Velocity.Y = maxFallSpeed;
+
+            // === X-Axis ===
+            Vector2 targetPosX = player.Position + new Vector2(player.Velocity.X, 0);
+            if (IsMoveValid(player, "Ground", targetPosX))
+            {
+                player.Position.X = targetPosX.X;
+            }
+            else
+            {
+                player.Velocity.X = 0;
+            }
+
+            // === Y-Axis ===
+            Vector2 targetPosY = player.Position + new Vector2(0, player.Velocity.Y);
+            if (IsMoveValid(player, "Ground", targetPosY))
+            {
+                player.Position.Y = targetPosY.Y;
+            }
+            else
+            {
+                player.Velocity.Y = 0;
+            }
+        }
+
+        /// <summary>
+        /// Determines whether the specified sprite can move to a target position without colliding 
+        /// with any other sprite that has the given collision tag, and ensures the movement stays within 
+        /// the window boundaries.
+        /// </summary>
+        /// <param name="item">The sprite that is attempting to move.</param>
+        /// <param name="tagCollisionElement">The tag of elements to check for potential collisions.</param>
+        /// <param name="targetPosition">The position the sprite wants to move to.</param>
+        /// <returns>
+        /// Returns <c>true</c> if the new position does not overlap any relevant objects and remains within
+        /// the bounds of the game window; otherwise, <c>false</c>.
+        /// </returns>
+        public bool IsMoveValid(Sprite2D item, string tagCollisionElement ,Vector2 targetPosition)
+        {
+            Vector2 windowSize = Window.GetWindowSize();
+            //ConsoleLog.Info($"{targetPosition.X} : {windowSize.X} : {item.Size.X}");
+            //ConsoleLog.Info($"{targetPosition.Y} : {windowSize.Y} : {item.Size.Y}");
+            return !sprite2Ds.Any(obj =>
+                       obj != item &&
+                       obj.Tag == tagCollisionElement &&
+                       IsOverlapping(targetPosition, item.Size, obj.Position, obj.Size))
+                   &&
+                   targetPosition.X >= 0 &&
+                   targetPosition.Y >= 0 &&
+                   targetPosition.X <= windowSize.X - item.Size.X - 15 &&
+                   targetPosition.Y <= windowSize.Y - item.Size.Y - 40;
+        }
+
+        /// <summary>
+        /// Determines whether two rectangles, defined by their positions and sizes, overlap.
+        /// </summary>
+        /// <param name="pos1">The top-left corner of the first rectangle.</param>
+        /// <param name="size1">The size (width and height) of the first rectangle.</param>
+        /// <param name="pos2">The top-left corner of the second rectangle.</param>
+        /// <param name="size2">The size (width and height) of the second rectangle.</param>
+        /// <returns>
+        /// Returns <c>true</c> if the two rectangles overlap; otherwise, <c>false</c>.
+        /// </returns>
+        private bool IsOverlapping(Vector2 pos1, Vector2 size1, Vector2 pos2, Vector2 size2)
+        {
+            return pos1.X < pos2.X + size2.X &&
+                   pos1.X + size1.X > pos2.X &&
+                   pos1.Y < pos2.Y + size2.Y &&
+                   pos1.Y + size1.Y > pos2.Y;
+        }
+
         public abstract void OnLoad();
         public abstract void OnDraw();
         public abstract void OnStart();

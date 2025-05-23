@@ -7,6 +7,8 @@ namespace MyFirstGameEngine.Models
     {
         public Vector2 Position { get; set; }
         public Vector2 Size { get; set; }
+        public Vector2 Velocity { get; set; } = Vector2.Zero();
+
         public string Tag { get; set; } = "";
         public string ImagePath { get; set; } = "";
         public Bitmap? Sprite { get; set; } = null;
@@ -85,7 +87,15 @@ namespace MyFirstGameEngine.Models
             Sprite?.Dispose();
             Engine.sprite2Ds.Remove(this);
         }
-
+        public Sprite2D Clone()
+        {
+            return new Sprite2D(
+                new Vector2(Position.X, Position.Y),
+                new Vector2(Size.X, Size.Y),
+                ImagePath,
+                Tag
+            );
+        }
         public bool IsColliding(string collingObjectTag)
         {
             
