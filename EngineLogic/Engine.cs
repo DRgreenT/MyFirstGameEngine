@@ -18,10 +18,7 @@ namespace MyFirstGameEngine.EngineLogic
         
         public Color BackGroundColor = Color.Black;
 
-        public static List<Shape2D> shape2Ds = new List<Shape2D>();
-        public static List<Sprite2D> sprite2Ds = new List<Sprite2D>();
-
-        public static Dictionary<string, Bitmap> CachedSprites = new Dictionary<string, Bitmap>();
+        public static HashSet<Keys> activeKeys = new();
 
         private Thread GameThread = null!;
         public Engine(Vector2? ScreenSize, string? WindowTitle)
@@ -43,7 +40,7 @@ namespace MyFirstGameEngine.EngineLogic
             GameThread.Start();
 
             Application.Run(Window);
-
+            
 
             cts.Cancel();
             GameThread.Join();
@@ -54,7 +51,7 @@ namespace MyFirstGameEngine.EngineLogic
             Graphics g = e.Graphics;
             g.Clear(Color.Black);
 
-            foreach (var shape in shape2Ds)
+            foreach (var shape in Shape2D.GetActiveShapes())
             {
                 using (Brush brush = new SolidBrush(shape.Color))
                 {
@@ -62,7 +59,7 @@ namespace MyFirstGameEngine.EngineLogic
                 }
             }
 
-            foreach (var sprite in sprite2Ds)
+            foreach (var sprite in Sprite2D.GetActiveSprites())
             {
                 if (sprite != null && sprite.Sprite != null)
                     g.DrawImage(sprite.Sprite, new PointF(sprite.Position.X, sprite.Position.Y));
@@ -129,7 +126,7 @@ namespace MyFirstGameEngine.EngineLogic
             }
         }
 
-        public static HashSet<Keys> activeKeys = new();
+        
         public Vector2 InputHandler(float modifier = 1f)
         {
             Vector2 delta = Vector2.Zero();
@@ -149,6 +146,21 @@ namespace MyFirstGameEngine.EngineLogic
             if (player == null || Window == null) return;
 
             Vector2 moveDelta = InputHandler();
+            if (!IsMoveValid(player, "Exit", player.Position + moveDelta, false))
+            {
+                try
+                {
+                    Window.Invoke(() =>
+                    {
+                        MessageBox.Show(Window, "Level end!", "Info");
+                    });
+                    Application.Exit();
+                }
+                catch
+                {   
+                    Environment.Exit(0);
+                }
+            }
 
             bool isGrounded = !IsMoveValid(player, "Ground", player.Position + new Vector2(0, 1));
 
@@ -184,6 +196,7 @@ namespace MyFirstGameEngine.EngineLogic
             {
                 player.Velocity.Y = 0;
             }
+            
         }
 
         /// <summary>
@@ -198,20 +211,28 @@ namespace MyFirstGameEngine.EngineLogic
         /// Returns <c>true</c> if the new position does not overlap any relevant objects and remains within
         /// the bounds of the game window; otherwise, <c>false</c>.
         /// </returns>
-        public bool IsMoveValid(Sprite2D item, string tagCollisionElement ,Vector2 targetPosition)
+        public bool IsMoveValid(Sprite2D item, string tagCollisionElement ,Vector2 targetPosition, bool IsWindowCollisionDetection = true)
         {
-            Vector2 windowSize = Window.GetWindowSize();
-            //ConsoleLog.Info($"{targetPosition.X} : {windowSize.X} : {item.Size.X}");
-            //ConsoleLog.Info($"{targetPosition.Y} : {windowSize.Y} : {item.Size.Y}");
-            return !sprite2Ds.Any(obj =>
-                       obj != item &&
-                       obj.Tag == tagCollisionElement &&
-                       IsOverlapping(targetPosition, item.Size, obj.Position, obj.Size))
-                   &&
-                   targetPosition.X >= 0 &&
-                   targetPosition.Y >= 0 &&
-                   targetPosition.X <= windowSize.X - item.Size.X - 15 &&
-                   targetPosition.Y <= windowSize.Y - item.Size.Y - 40;
+            if(!IsWindowCollisionDetection)
+            {
+                return !Sprite2D.GetActiveSprites().Any(obj =>
+                    obj != item &&
+                    obj.Tag == tagCollisionElement &&
+                    IsOverlapping(targetPosition, item.Size, obj.Position, obj.Size));
+            }
+            else
+            {
+                Vector2 windowSize = Window.GetWindowSize();
+                return !Sprite2D.GetActiveSprites().Any(obj =>
+                    obj != item &&
+                    obj.Tag == tagCollisionElement &&
+                    IsOverlapping(targetPosition, item.Size, obj.Position, obj.Size))
+                    &&
+                    targetPosition.X >= 0 &&
+                    targetPosition.Y >= 0 &&
+                    targetPosition.X <= windowSize.X - item.Size.X - 15 &&
+                    targetPosition.Y <= windowSize.Y - item.Size.Y - 40;
+            }
         }
 
         /// <summary>
@@ -232,6 +253,8 @@ namespace MyFirstGameEngine.EngineLogic
                    pos1.Y + size1.Y > pos2.Y;
         }
 
+
+        // Abstract methods
         public abstract void OnLoad();
         public abstract void OnDraw();
         public abstract void OnStart();
