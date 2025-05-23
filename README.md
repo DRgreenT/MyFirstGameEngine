@@ -1,6 +1,6 @@
 # MyFirstGameEngine
 
-**MyFirstGameEngine** is a simple 2D game engine with a WinForms-based interface, featuring a basic game loop, physics system (gravity & collision), sprites, shapes, and runtime logging via the console.
+**MyFirstGameEngine** is a learning project and a simple 2D game engine with a WinForms-based interface, featuring a basic game loop, physics system (gravity & collision), sprites, shapes, and runtime logging via the console.
 
 <img src="https://github.com/DRgreenT/MyFirstGameEngine/blob/master/docs/game_example.png" widht="100%"></img>
 
