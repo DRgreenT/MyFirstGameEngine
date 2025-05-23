@@ -2,6 +2,11 @@
 
 **MyFirstGameEngine** is a simple 2D game engine with a WinForms-based interface, featuring a basic game loop, physics system (gravity & collision), sprites, shapes, and runtime logging via the console.
 
+<img src="https://github.com/DRgreenT/MyFirstGameEngine/blob/master/docs/game_example.png" widht="100%"></img>
+
+<img src="https://github.com/DRgreenT/MyFirstGameEngine/blob/master/docs/game_example.png" widht="100%"></img>
+
+
 ## Component Overview
 
 ### `Program.cs`
@@ -54,7 +59,7 @@
 - **Collision detection** with `Ground` objects (level structure)
 - **Movement rollback on collision**: player position is reset if blocked
 
-["Kenny´s" sprite pack](https://opengameart.org/content/platformer-art-complete-pack-often-updated)
+["KennyÂ´s" sprite pack](https://opengameart.org/content/platformer-art-complete-pack-often-updated)
 
 ---
 
