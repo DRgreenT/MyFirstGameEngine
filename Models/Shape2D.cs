@@ -12,6 +12,8 @@ namespace MyFirstGameEngine.Models
 
         public string Tag { get; set; } = "";
 
+        private static List<Shape2D> ActiveShapes = new List<Shape2D>();
+
         public Shape2D(Vector2 position, Vector2 size, Color color, string tag)
         {
             Position = position;
@@ -21,21 +23,26 @@ namespace MyFirstGameEngine.Models
             RegisterShape();
             ConsoleLog.Info($"Shape: ({tag} created and registered.");
         }
+
+        public static List<Shape2D> GetActiveShapes() 
+        {
+            return ActiveShapes;
+        }
         void RegisterShape()
         {
-            Engine.shape2Ds.Add(this);
+			ActiveShapes.Add(this);
         }
 
         public void DeleteShape()
         {
-            Engine.shape2Ds.Remove(this);
+			ActiveShapes.Remove(this);
             ConsoleLog.Info($"{this.Tag} -> Shape deleted");
         }
 
         public bool IsColliding(string collingObjectTag)
         {
 
-            foreach (var item in Engine.sprite2Ds)
+            foreach (var item in GetActiveShapes())
             {
 
                 if (item.Tag == collingObjectTag)
