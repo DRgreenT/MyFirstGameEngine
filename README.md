@@ -4,7 +4,7 @@
 
 <img src="https://github.com/DRgreenT/MyFirstGameEngine/blob/master/docs/game_example.png" widht="100%"></img>
 
-<img src="https://github.com/DRgreenT/MyFirstGameEngine/blob/master/docs/game_example.png" widht="100%"></img>
+<img src="https://github.com/DRgreenT/MyFirstGameEngine/blob/master/docs/debugLog.png" widht="100%"></img>
 
 
 ## Component Overview
